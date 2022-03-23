@@ -26,7 +26,8 @@ class ShopController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all()->pluck('name', 'id');
+        return view('new', ['categories' => $categories]);
     }
 
     /**
@@ -37,7 +38,12 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $shop = new Shop;
+        $shop->name = request('name');
+        $shop->address = request('address');
+        $shop->category_id = request('category_id');
+        $shop->save();
+        return redirect()->route('shop.detail', ['id' => $shop->id]);
     }
 
     /**
