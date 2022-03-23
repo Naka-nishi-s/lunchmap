@@ -64,9 +64,11 @@ class ShopController extends Controller
      * @param  \App\Models\Shop  $shop
      * @return \Illuminate\Http\Response
      */
-    public function edit(Shop $shop)
+    public function edit(Shop $shop, $id)
     {
-        //
+        $shop = Shop::find($id);
+        $categories = Category::all()->pluck('name', 'id');
+        return view('edit', ['shop' => $shop, 'categories' => $categories]);
     }
 
     /**
@@ -76,9 +78,14 @@ class ShopController extends Controller
      * @param  \App\Models\Shop  $shop
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Shop $shop)
+    public function update(Request $request, $id, Shop $shop)
     {
-        //
+        $shop = Shop::find($id);
+        $shop->name = request('name');
+        $shop->address = request('address');
+        $shop->category_id = request('category_id');
+        $shop->save();
+        return redirect()->route('shop.detail', ['id' => $shop->id]);
     }
 
     /**
@@ -87,8 +94,10 @@ class ShopController extends Controller
      * @param  \App\Models\Shop  $shop
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Shop $shop)
+    public function destroy($id)
     {
-        //
+        $shop = Shop::find($id);
+        $shop->delete();
+        return redirect('/shops');
     }
 }
